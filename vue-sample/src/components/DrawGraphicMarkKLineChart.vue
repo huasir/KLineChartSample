@@ -82,6 +82,10 @@ const martin = {
   },
   createGraphicDataSource: (step, tpPoint, xyPoints) => {
     if (xyPoints.length === 2) {
+      console.log(">>>>>>>>>>>>>>>>>>>>>>")
+      console.log(tpPoint)
+      console.log(xyPoints)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>")
       return [
         // {
         //   type: 'line',
@@ -106,6 +110,7 @@ const martin = {
             {x: xyPoints[0].x, y: xyPoints[1].y}
           ]]
         },
+
         {
           type: 'polygon',
           isDraw: true,
@@ -114,30 +119,30 @@ const martin = {
             {...xyPoints[0]},
             // {x: xyPoints[1].x, y: xyPoints[0].y},
             {...xyPoints[1]},
-            {x: xyPoints[0].x, y: xyPoints[1].y} //0x1y
+            {timestamp: xyPoints[0].timestamp, price: xyPoints[1].price} //0x1y
           ]]
         }
       ]
     }
     return []
   },
-  // drawExtend: (ctx, graphicDataSources, markOptions, viewport, precision, xAxis, yAxis) => {
-  //   console.log("+++++++++++++++++++++")
-  //   console.log(markOptions)
-  //   console.log(graphicDataSources)
-  //   console.log("========================")
-  //   // console.log(ctx)
-  //
-  //   let y0 = graphicDataSources[0].dataSource[0][0].y
-  //   let y1 = graphicDataSources[0].dataSource[0][1].y
-  //   if (y1 > y0) {
-  //     markOptions.polygon.stroke.color = '#F55353'//red
-  //     markOptions.polygon.fill.color = 'rgba(246,42,66, 0.1)'//red
-  //   } else {
-  //     markOptions.polygon.stroke.color = '#4BF95F'//green
-  //     markOptions.polygon.fill.color = 'rgba(72,231,109, 0.2)'//green
-  //   }
-  // }
+  drawExtend: (ctx, graphicDataSources, markOptions, viewport, precision, xAxis, yAxis) => {
+    console.log("+++++++++++++++++++++")
+    console.log(markOptions)
+    console.log(graphicDataSources)
+    console.log("========================")
+    console.log(ctx)
+    //
+    // let y0 = graphicDataSources[0].dataSource[0][0].y
+    // let y1 = graphicDataSources[0].dataSource[0][1].y
+    // if (y1 > y0) {
+    //   markOptions.polygon.stroke.color = '#F55353'//red
+    //   markOptions.polygon.fill.color = 'rgba(246,42,66, 0.1)'//red
+    // } else {
+    //   markOptions.polygon.stroke.color = '#4BF95F'//green
+    //   markOptions.polygon.fill.color = 'rgba(72,231,109, 0.2)'//green
+    // }
+  }
 }
 
 
@@ -191,8 +196,13 @@ export default {
         {key: 'fibonacciLine', text: '斐波那契回调'},
         {key: 'rect', text: '自定义矩形'},
         {key: 'martin', text: '自定义马丁'},
-        {key: 'circle', text: '自定义圆'}
-      ]
+        {key: 'circle', text: '自定义圆'},
+        {key: 'rayLine', text: '其他未知'}
+        //horizontalRayLine, horizontalSegment, horizontalStraightLine, verticalRayLine,
+        // verticalSegment, verticalStraightLine, rayLine, segment, straightLine, priceLine,
+        // priceChannelLine , parallelStraightLine, fibonacciLine
+      ],
+      klines: []
     }
   },
   mounted: function () {
@@ -200,19 +210,29 @@ export default {
     this.kLineChart.addCustomGraphicMark(rect)
     this.kLineChart.addCustomGraphicMark(circle)
     this.kLineChart.addCustomGraphicMark(martin)
-    this.kLineChart.applyNewData(generatedKLineDataList())
+    this.klines = generatedKLineDataList();
+    this.kLineChart.applyNewData(this.klines)
   },
   methods: {
     setGraphicMarkType: function (graphicMarkType) {
       // this.kLineChart.createGraphicMark(graphicMarkType)
       this.createMartinMark();
     },
-    createMartinMark(){
+    createMartinMark() {
       console.log("create martin mark")
-      this.kLineChart.createGraphicMark('martin',{
+      // console.log(this.kLineChart.convertToPixel(this.klines[10]))
+      let l = this.klines.length
+      this.kLineChart.createGraphicMark('martin', {
         points: [
-          { timestamp: 1614171282000, price: 18987 },
-          { timestamp: 1614171202000, price: 16098 },
+          { timestamp: this.klines[l-50].timestamp, price: this.klines[l-50].close },
+          { timestamp: this.klines[l-10].timestamp, price: this.klines[l-10].close }
+        ]
+      })
+
+      this.kLineChart.createGraphicMark('martin', {
+        points: [
+          { timestamp: this.klines[l-30].timestamp, price: this.klines[l-30].close },
+          { timestamp: this.klines[l-10].timestamp, price: this.klines[l-10].close }
         ]
       })
     },
