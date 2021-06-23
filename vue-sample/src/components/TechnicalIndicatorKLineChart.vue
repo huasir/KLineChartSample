@@ -59,6 +59,13 @@
       { barSpace },
       options, xAxis, yAxis
     ) => {
+      console.log(">>>>>>>>>>>>>>>>>>>>>>")
+      console.log(ctx)
+      console.log(from)
+      console.log(to)
+      console.log(technicalIndicatorDataList)
+      console.log(">>>>>>>>>>>>>>>>>>>>>>")
+
       ctx.font = `${barSpace}px Helvetica Neue`
       ctx.textAlign = 'center'
       for (let i = from; i < to; i++) {
